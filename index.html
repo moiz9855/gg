@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday GG</title>
+<style>
+  /* Layout concept: a single scrolling card-stack — hero, then a row of
+     "why you're the best" cards, then a friendship-timeline strip nodding
+     to Goose Goose Duck 2024, closing on one big wish. Floating goose/duck
+     shapes drift behind everything instead of generic confetti. */
+  :root{
+    --bg: #FFF7EC;
+    --bg-soft: #FFEFDC;
+    --ink: #3A2E22;
+    --ink-soft: #7A6A57;
+    --goose-orange: #F2994A;
+    --duck-blue: #5AA9C9;
+    --petal-pink: #F2A6B4;
+    --line: #EBD9C1;
+    --card-bg: #FFFFFF;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #221A12;
+      --bg-soft: #2B2118;
+      --ink: #F6ECDD;
+      --ink-soft: #C9B79F;
+      --goose-orange: #F7A95E;
+      --duck-blue: #7FC2DF;
+      --petal-pink: #F2A6B4;
+      --line: #3C2F22;
+      --card-bg: #2B2118;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #221A12;
+    --bg-soft: #2B2118;
+    --ink: #F6ECDD;
+    --ink-soft: #C9B79F;
+    --goose-orange: #F7A95E;
+    --duck-blue: #7FC2DF;
+    --petal-pink: #F2A6B4;
+    --line: #3C2F22;
+    --card-bg: #2B2118;
+    color-scheme: dark;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap');
+
+  *{box-sizing:border-box;}
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+  }
+  .gutter{
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+
+  h1,h2,h3{
+    font-family: 'Baloo 2', 'Nunito', sans-serif;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  /* ---------- floating backdrop ---------- */
+  .sky{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .drift{
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.35;
+    animation: floatUp linear infinite;
+    will-change: transform;
+  }
+  @keyframes floatUp{
+    from{ transform: translateY(110vh) rotate(-8deg); }
+    to{ transform: translateY(-15vh) rotate(8deg); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .drift{ animation: none; opacity: 0.18; }
+  }
+
+  main{
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding-block: 56px 80px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align: center;
+    padding-block: 12px 32px;
+  }
+  .eyebrow{
+    display: inline-block;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--duck-blue);
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 9vw, 4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--goose-orange);
+  }
+  .hero h1 span{
+    display: block;
+    color: var(--ink);
+    font-size: 0.5em;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+  .hero p{
+    max-width: 46ch;
+    margin: 20px auto 0;
+    font-size: 1.08rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .cake-row{
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    font-size: 2.2rem;
+    margin-top: 22px;
+  }
+  .cake-row span{ animation: bob 2.4s ease-in-out infinite; }
+  .cake-row span:nth-child(2){ animation-delay: .3s; }
+  .cake-row span:nth-child(3){ animation-delay: .6s; }
+  .cake-row span:nth-child(4){ animation-delay: .9s; }
+  @keyframes bob{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(-8px); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cake-row span{ animation: none; }
+  }
+
+  /* ---------- section heading ---------- */
+  .section-head{
+    text-align: center;
+    margin: 56px 0 28px;
+  }
+  .section-head h2{
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    color: var(--ink);
+  }
+  .section-head .sub{
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+    margin-top: 6px;
+  }
+
+  /* ---------- trait cards ---------- */
+  .traits{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 16px;
+  }
+  @media (max-width: 480px){
+    .traits{ grid-template-columns: 1fr; }
+  }
+  .trait{
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px;
+    min-width: 0;
+  }
+  .trait .icon{
+    font-size: 1.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    margin-bottom: 14px;
+  }
+  .trait h3{
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .trait p{
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline{
+    border: 1px solid var(--line);
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 28px;
+    margin-top: 8px;
+  }
+  .timeline-item{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    padding-block: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .timeline-item:last-child{ border-bottom: none; }
+  .timeline-item .tag{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--duck-blue);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .timeline-item .body{ min-width: 0; }
+  .timeline-item .body strong{ display:block; margin-bottom: 2px; }
+  .timeline-item .body span{ color: var(--ink-soft); font-size: 0.93rem; }
+
+  /* ---------- closing ---------- */
+  .closing{
+    margin-top: 60px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg-soft), transparent);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 40px 24px;
+  }
+  .closing h2{
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    color: var(--goose-orange);
+    margin-bottom: 14px;
+  }
+  .closing p{
+    max-width: 48ch;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+  .signoff{
+    margin-top: 22px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 1.05rem;
+  }
+
+  .footer-note{
+    text-align: center;
+    margin-top: 40px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" aria-hidden="true" id="sky"></div>
+
+<main class="gutter">
+
+  <section class="hero">
+    <span class="eyebrow">A little impostor's announcement 🪿</span>
+    <h1>Happy Birthday<span>GG</span></h1>
+    <p>One honk for every year you've made everyone around you feel like they matter — which, from what I've seen, is a lot of honks.</p>
+    <div class="cake-row" aria-hidden="true">
+      <span>🎂</span><span>🎈</span><span>🪿</span><span>🦆</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Why today is worth celebrating</h2>
+      <div class="sub">A few honest, non-negotiable facts about you</div>
+    </div>
+    <div class="traits">
+      <div class="trait">
+        <div class="icon">💛</div>
+        <h3>You're genuinely supportive</h3>
+        <p>Not the "nice in passing" kind — the kind who actually checks in, remembers details, and shows up when it counts.</p>
+      </div>
+      <div class="trait">
+        <div class="icon">✨</div>
+        <h3>You're sweet without trying</h3>
+        <p>It just comes naturally to you, and somehow it never feels forced or performative. People notice that.</p>
+      </div>
+      <div class="trait">
+        <div class="icon">🪿</div>
+        <h3>You're a certified goose</h3>
+        <p>We met over a game about geese pretending to be ducks, and honestly that origin story is exactly as chaotic and wonderful as you are.</p>
+      </div>
+      <div class="trait">
+        <div class="icon">🤝</div>
+        <h3>You're easy to trust</h3>
+        <p>Whether it's a round of sus accusations or something actually serious, you're the one people believe without needing proof.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>How we got here</h2>
+      <div class="sub">A very short, very honking history</div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="tag">2024</div>
+        <div class="body">
+          <strong>We meet in Goose Goose Duck</strong>
+          <span>Some lobby, some round, some chaos — and somehow a real friendship came out of it.</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tag">Since then</div>
+        <div class="body">
+          <strong>You just kept being you</strong>
+          <span>Supportive, sweet, and somehow always in a good mood to talk to.</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tag">Today</div>
+        <div class="body">
+          <strong>It's your day</strong>
+          <span>And this whole page exists just to make that very clear.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <h2>Happy Birthday, GG 🎉</h2>
+    <p>Here's to another year of being the kind of friend people are lucky to have. Hope today treats you as well as you treat everyone else.</p>
+    <div class="signoff">— Andy 🪿</div>
+  </section>
+
+  <div class="footer-note">made with way too much love and a little bit of goose energy</div>
+
+</main>
+
+<script>
+(function(){
+  var sky = document.getElementById('sky');
+  var emojis = ['🪿','🦆','🎈','✨'];
+  var count = window.innerWidth < 500 ? 7 : 12;
+  for (var i = 0; i < count; i++){
+    var el = document.createElement('div');
+    el.className = 'drift';
+    el.textContent = emojis[i % emojis.length];
+    el.style.left = (Math.random() * 94) + 'vw';
+    el.style.fontSize = (1.4 + Math.random() * 1.6) + 'rem';
+    var duration = 14 + Math.random() * 14;
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = (-Math.random() * duration) + 's';
+    sky.appendChild(el);
+  }
+})();
+</script>
+</body>
+</html>
